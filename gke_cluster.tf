@@ -17,6 +17,6 @@ resource "null_resource" "write_gke_context_to_file" {
 resource "null_resource" "add_fluxcd_helm" {
   depends_on = [module.gke_cluster]
   provisioner "local-exec" {
-    command = "helm repo remove fluxcd-community https://fluxcd-community.github.io/helm-charts"
+    command = "helm repo add fluxcd-community https://fluxcd-community.github.io/helm-charts"
   }
 }
