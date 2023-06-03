@@ -14,10 +14,11 @@ provider "flux" {
   }
   git = {
     url = "https://github.com/dereban25/flux_cd.git"
-    # http = {
-    #   username = "git"
-    #   password = var.github_token
-    # }
+    branch = "master"
+    http = {
+      username = "dereban25"
+      password = var.token_git
+    }
   }
 }
 terraform {
