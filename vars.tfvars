@@ -1,0 +1,2 @@
+GOOGLE_PROJECT  = "kuber-351315"
+GOOGLE_REGION = "us-central1"
