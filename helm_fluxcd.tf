@@ -1,0 +1,11 @@
+resource "helm_release" "fluxcd" {
+  repository       = "https://fluxcd-community.github.io/helm-charts"
+  chart            = "flux2"
+  name             = "flux2"
+  namespace        = "flux-system"
+  create_namespace = true
+}
+
+resource "flux_bootstrap_git" "this" {
+  path = "fluxcd/GKE"
+}
