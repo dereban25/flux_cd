@@ -50,5 +50,4 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           sops --decrypt secret.enc.yaml | kubectl apply -f -
-          kubectl get secret ${{ secrets.K8S_SECRET }} -o jsonpath="{.data['file\.txt']}" | base64 -d
 
