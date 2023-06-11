@@ -45,7 +45,7 @@ jobs:
           echo "${{ steps.get-secret.outputs.secret }}" > file.txt
           kubectl create secret generic my-secret --from-file=file.txt --dry-run=client -o yaml > secret.yaml
           sops --encrypt --gcp-kms projects/kuber-351315/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux secret.yaml > secret.enc.yaml
-          gcloud components install gke-gcloud-auth-plugin
+          sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
           gcloud container clusters get-credentials main --region us-central1 --project kuber-351315
           kubectl get nodes
           sops --decrypt --gcp-kms projects/kuber-351315/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux secret.enc.yaml | kubectl apply -f -
