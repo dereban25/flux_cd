@@ -20,7 +20,7 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          project_id: "kuber-351315"
+          project_id: ${{ secrets.PROJECT_ID }}
 
       - name: Authenticate with GCP
         run: |
@@ -43,8 +43,8 @@ jobs:
       - name: Encrypt secret using SOPS
         run: |
           echo "${{ steps.get-secret.outputs.secret }}" > file.txt
-          kubectl create secret generic my-secret --from-file=file.txt --dry-run=client -o yaml > secret.yaml
-          sops --encrypt --gcp-kms projects/kuber-351315/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux secret.yaml > secret.enc.yaml
+          kubectl create secret generic ${{ secrets.K8S_SECRET }} --from-file=file.txt --dry-run=client -o yaml > secret.yaml
+          sops --encrypt --gcp-kms projects/${{ secrets.PROJECT_ID }}/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux secret.yaml > secret.enc.yaml
 
      
       - uses: simenandre/setup-gke-gcloud-auth-plugin@v1
@@ -56,6 +56,6 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl get nodes
           sops --decrypt --gcp-kms projects/kuber-351315/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux secret.enc.yaml | kubectl apply -f -
+          kubectl get secret ${{ secrets.K8S_SECRET }} -o jsonpath="{.data['file\.txt']}" | base64 -d
 
