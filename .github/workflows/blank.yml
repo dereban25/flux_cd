@@ -40,14 +40,12 @@ jobs:
           sudo mv sops /usr/local/bin/sops
 
       
-      - name: Decrypt secret using SOPS
-        id: decrypt-secret
+      - name: Encrypt secret using SOPS
         run: |
           echo "${{ steps.get-secret.outputs.secret }}" > file.txt
           kubectl create secret generic my-secret --from-file=file.txt --dry-run=client -o yaml > secret.yaml
           sops --encrypt --gcp-kms projects/kuber-351315/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux secret.yaml > secret.enc.yaml
 
-          sops --decrypt --gcp-kms projects/kuber-351315/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux secret.enc.yaml | kubectl apply -f -
      
       - uses: simenandre/setup-gke-gcloud-auth-plugin@v1
 
