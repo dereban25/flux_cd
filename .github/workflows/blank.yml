@@ -1,0 +1,58 @@
+name: Deploy Secrets to Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Authenticate with GCP
+        run: |
+          gcloud secrets list
+          gcloud secrets describe TELE_TOKEN
+
+      - name: Retrieve secret from Secret Manager
+        id: get-secret
+        run: |
+          SECRET_VALUE=$(gcloud secrets versions access latest --secret=TELE_TOKEN --format='get(payload.data)' --quiet)
+          echo "::set-output name=secret::$SECRET_VALUE"
+
+      - name: Install SOPS
+        run: |
+          curl -L -o sops https://github.com/mozilla/sops/releases/download/v3.7.1/sops-v3.7.1.linux
+          chmod +x sops
+          sudo mv sops /usr/local/bin/sops
+
+      
+      - name: Decrypt secret using SOPS
+        id: decrypt-secret
+        run: |
+          echo "${{ steps.get-secret.outputs.secret }}" > file.txt
+          kubectl create secret generic my-secret --from-file=file.txt --dry-run=client -o yaml > secret.yaml
+          sops --encrypt --gcp-kms projects/kuber-351315/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux secret.yaml > secret.enc.yaml
+
+
+
+#       - name: Deploy to Kubernetes
+#         run: gcloud container clusters get-credentials key --region europe-central2 --project unique-dialect-381214
+
+#       - name: Encrypt secret using SOPS
+#         run: sops --config sops-config.yaml -e secret.yaml > mysecret.sops.yaml
+
+#       - name: Apply encrypted secret.yaml
+#         run: sops --decrypt secret.enc.yaml | kubectl apply -f -
