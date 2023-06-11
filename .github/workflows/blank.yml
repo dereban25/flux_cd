@@ -3,7 +3,7 @@ name: Deploy Secrets to Kubernetes
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
