@@ -28,10 +28,8 @@ jobs:
           gcloud secrets describe TELE_TOKEN
 
       - name: Retrieve secret from Secret Manager
-        id: get-secret
-        run: |
-          SECRET_VALUE=$(gcloud secrets versions access latest --secret=TELE_TOKEN --format='get(payload.data)' --quiet)
-          echo "::set-output name=secret::$SECRET_VALUE"
+        run: gcloud secrets versions access latest --secret=TELE_TOKEN --format='get(payload.data)' --quiet > file.txt
+
 
       - name: Install SOPS
         run: |
@@ -42,7 +40,6 @@ jobs:
       
       - name: Encrypt secret using SOPS
         run: |
-          echo "${{ steps.get-secret.outputs.secret }}" > file.txt
           kubectl create secret generic ${{ secrets.K8S_SECRET }} --from-file=file.txt --dry-run=client -o yaml > secret.yaml
           sops --encrypt secret.yaml > secret.enc.yaml
 
