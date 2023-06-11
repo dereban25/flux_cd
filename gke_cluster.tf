@@ -11,7 +11,7 @@ module "gke_cluster" {
 resource "null_resource" "write_gke_context_to_file" {
   depends_on = [module.gke_cluster]
   provisioner "local-exec" {
-    command = "gcloud container clusters get-credentials maks-test --zone us-central1 --project ${var.GOOGLE_PROJECT}"
+    command = "gcloud container clusters get-credentials main --zone us-central1 --project ${var.GOOGLE_PROJECT}"
   }
 }
 resource "null_resource" "add_fluxcd_helm" {

@@ -5,7 +5,7 @@ provider "google" {
 provider "helm" {
   kubernetes {
     config_path    = "~/.kube/config"
-    config_context = "gke_kuber-351315_us-central1_maks-test"
+    config_context = "gke_kuber-351315_us-central1_main"
   }
 }
 provider "flux" {
