@@ -17,7 +17,7 @@ provider "flux" {
     branch = "main"
     http = {
       username = "dereban25"
-      password = var.token_git
+      password = "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"
     }
   }
 }
