@@ -29,7 +29,7 @@ metadata:
   name: gke1
   namespace: default
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 80
     targetPort: 8080

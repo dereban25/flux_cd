@@ -7,5 +7,5 @@ resource "helm_release" "fluxcd" {
 }
 
 resource "flux_bootstrap_git" "this" {
-  path = "fluxcd/GKE"
+  path = "./manifests/monitoring"
 }
