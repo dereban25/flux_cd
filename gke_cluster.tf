@@ -3,7 +3,7 @@ module "gke_cluster" {
   GOOGLE_REGION    = var.GOOGLE_REGION
   GOOGLE_PROJECT   = var.GOOGLE_PROJECT
   GKE_NUM_NODES    = 1
-  GKE_MACHINE_TYPE = "e2-medium"
+  GKE_MACHINE_TYPE = "e4-medium"
   DISK_SIZE_GB     = 20
   GKE_CLUSTER_NAME = "main"
 }
@@ -20,17 +20,17 @@ resource "null_resource" "add_fluxcd_helm" {
     command = "helm repo add fluxcd-community https://fluxcd-community.github.io/helm-charts"
   }
 }
-module "gke-workload-identity" {
-  source              = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
-  use_existing_k8s_sa = true
-  name                = "kustomize-controller"
-  namespace           = "flux-system"
-  project_id          = var.GOOGLE_PROJECT
-  cluster_name        = "main"
-  location            = var.GOOGLE_REGION
-  annotate_k8s_sa     = true
-  roles               = ["roles/cloudkms.cryptoKeyEncrypterDecrypter"]
-}
+# module "gke-workload-identity" {
+#   source              = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
+#   use_existing_k8s_sa = true
+#   name                = "kustomize-controller"
+#   namespace           = "flux-system"
+#   project_id          = var.GOOGLE_PROJECT
+#   cluster_name        = "main"
+#   location            = var.GOOGLE_REGION
+#   annotate_k8s_sa     = true
+#   roles               = ["roles/cloudkms.cryptoKeyEncrypterDecrypter"]
+# }
 
 
 # module "kms" {

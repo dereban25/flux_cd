@@ -13,7 +13,7 @@ provider "flux" {
     config_path = "~/.kube/config"
   }
   git = {
-    url = "https://github.com/fluxcd/flux2"
+    url = "https://github.com/dereban25/flux2.git"
     branch = "main"
     http = {
       username = "dereban25"
